@@ -70,7 +70,7 @@ const PRESET_COLORS = [
 
 // ================= INICIALIZACIÓN =================
 document.addEventListener('DOMContentLoaded', async () => {
-  document.getElementById('brand-version').textContent = VERSION;
+
   initTheme();
   initPWA();
   initNavigation();
@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   refreshLucideIcons();
+  document.getElementById('brand-version').textContent = VERSION;
 });
 
 function refreshLucideIcons() {
