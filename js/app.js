@@ -26,6 +26,8 @@ import {
 import { generateActionsPDF } from './pdf-export.js';
 
 // ================= ESTADO GLOBAL =================
+const VERSION = "0.7";
+
 const state = {
   categories: [],
   categoriesMap: {},
@@ -68,6 +70,7 @@ const PRESET_COLORS = [
 
 // ================= INICIALIZACIÓN =================
 document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('brand-version').textContent = VERSION;
   initTheme();
   initPWA();
   initNavigation();

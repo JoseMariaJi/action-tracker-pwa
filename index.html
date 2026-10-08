@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Registro de Acciones - PWA</title>
-  
+
   <!-- PWA Meta Tags -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4f46e5">
@@ -13,10 +15,11 @@
   <meta name="apple-mobile-web-app-title" content="Acciones">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
-  
+
   <!-- Estilos de la Aplicación -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
   <div id="app">
     <!-- Header -->
@@ -26,13 +29,14 @@
           <i data-lucide="check-circle-2"></i>
         </div>
         <h1 class="brand-title">Acciones</h1>
+        <div class="brand-version" id="brand-version" style="font-size: 0.5rem;">1.0</div>
       </div>
 
       <div class="header-actions">
         <span id="offlineBadge" class="badge-offline">
           <i data-lucide="wifi-off" style="width: 12px; height: 12px;"></i> Offline
         </span>
-        
+
         <button id="btnInstall" class="btn-install" title="Instalar aplicación">
           <i data-lucide="download" style="width: 14px; height: 14px;"></i> Instalar
         </button>
@@ -45,7 +49,7 @@
 
     <!-- Contenido Principal -->
     <main class="main-content">
-      
+
       <!-- VISTA 1: REGISTRAR (Acciones Rápidas) -->
       <section id="view-register" class="view-section active">
         <div class="quick-stats-bar">
@@ -158,8 +162,9 @@
             <i data-lucide="file-text" style="color: var(--primary);"></i>
             Generar Informe en PDF
           </h3>
-          <p>Crea un documento PDF listo para descargar con la lista detallada de acciones, categorías, fecha, hora y notas.</p>
-          
+          <p>Crea un documento PDF listo para descargar con la lista detallada de acciones, categorías, fecha, hora y
+            notas.</p>
+
           <div class="form-grid">
             <div class="form-group">
               <label for="pdfPeriodSelect">Período del informe</label>
@@ -213,7 +218,8 @@
             <i data-lucide="database" style="color: var(--success);"></i>
             Copia de Seguridad (IndexedDB)
           </h3>
-          <p>Guarda una copia de seguridad local completa (categorías, acciones y registros) en formato JSON para transferirla a otro dispositivo.</p>
+          <p>Guarda una copia de seguridad local completa (categorías, acciones y registros) en formato JSON para
+            transferirla a otro dispositivo.</p>
 
           <div style="display: flex; gap: 10px; flex-direction: column;">
             <button id="btnExportJSON" class="btn-secondary">
@@ -273,14 +279,17 @@
 
             <div class="form-group">
               <label for="actionNameInput">Nombre de la acción *</label>
-              <input type="text" id="actionNameInput" class="text-input" placeholder="Ej: Matemáticas, Ciencia Ficción..." required maxlength="40">
+              <input type="text" id="actionNameInput" class="text-input"
+                placeholder="Ej: Matemáticas, Ciencia Ficción..." required maxlength="40">
             </div>
 
             <div class="form-group">
               <label>Icono (Lucide)</label>
               <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                <input type="text" id="iconSearchInput" class="text-input" placeholder="Filtrar iconos..." style="flex: 1; padding: 6px 10px; font-size: 0.85rem;">
-                <div id="iconSelectedPreview" style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center;">
+                <input type="text" id="iconSearchInput" class="text-input" placeholder="Filtrar iconos..."
+                  style="flex: 1; padding: 6px 10px; font-size: 0.85rem;">
+                <div id="iconSelectedPreview"
+                  style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center;">
                   <i data-lucide="check-circle" id="previewLucideIcon"></i>
                 </div>
               </div>
@@ -320,14 +329,17 @@
           <div class="modal-body">
             <div class="form-group">
               <label for="categoryNameInput">Nombre de la categoría *</label>
-              <input type="text" id="categoryNameInput" class="text-input" placeholder="Ej: Estudio, Películas, Deporte..." required maxlength="35">
+              <input type="text" id="categoryNameInput" class="text-input"
+                placeholder="Ej: Estudio, Películas, Deporte..." required maxlength="35">
             </div>
 
             <div class="form-group">
               <label>Icono de categoría</label>
               <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                <input type="text" id="categoryIconSearch" class="text-input" placeholder="Filtrar iconos..." style="flex: 1; padding: 6px 10px; font-size: 0.85rem;">
-                <div id="categoryIconPreview" style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center;">
+                <input type="text" id="categoryIconSearch" class="text-input" placeholder="Filtrar iconos..."
+                  style="flex: 1; padding: 6px 10px; font-size: 0.85rem;">
+                <div id="categoryIconPreview"
+                  style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center;">
                   <i data-lucide="folder" id="categoryPreviewIconEl"></i>
                 </div>
               </div>
@@ -346,7 +358,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" id="btnCancelCategoryModal" class="btn-secondary" style="width: auto;">Cancelar</button>
+            <button type="button" id="btnCancelCategoryModal" class="btn-secondary"
+              style="width: auto;">Cancelar</button>
             <button type="submit" class="btn-primary" style="width: auto;">Guardar Categoría</button>
           </div>
         </form>
@@ -366,7 +379,8 @@
           <input type="hidden" id="noteLogId">
           <div class="form-group">
             <label id="noteModalSubtitle" for="noteTextInput">Detalles de la acción</label>
-            <textarea id="noteTextInput" class="text-input" rows="3" placeholder="Escribe detalles adicionales (opcional)..." style="resize: vertical;"></textarea>
+            <textarea id="noteTextInput" class="text-input" rows="3"
+              placeholder="Escribe detalles adicionales (opcional)..." style="resize: vertical;"></textarea>
           </div>
         </div>
         <div class="modal-footer">
@@ -388,4 +402,5 @@
   <!-- Lógica de la Aplicación -->
   <script type="module" src="js/app.js"></script>
 </body>
+
 </html>
