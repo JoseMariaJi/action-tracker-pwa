@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Registro de Acciones - PWA</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Acciones">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+  
+  <!-- Estilos de la Aplicación -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <i data-lucide="check-circle-2"></i>
+        </div>
+        <h1 class="brand-title">Acciones</h1>
+      </div>
+
+      <div class="header-actions">
+        <span id="offlineBadge" class="badge-offline">
+          <i data-lucide="wifi-off" style="width: 12px; height: 12px;"></i> Offline
+        </span>
+        
+        <button id="btnInstall" class="btn-install" title="Instalar aplicación">
+          <i data-lucide="download" style="width: 14px; height: 14px;"></i> Instalar
+        </button>
+
+        <button id="btnThemeToggle" class="btn-icon" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
+          <i data-lucide="moon" id="themeIcon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+      
+      <!-- VISTA 1: REGISTRAR (Acciones Rápidas) -->
+      <section id="view-register" class="view-section active">
+        <div class="quick-stats-bar">
+          <div class="stat-item">
+            <span class="stat-value" id="statTodayCount">0</span>
+            <span class="stat-label">Acciones hoy</span>
+          </div>
+          <div class="stat-item" style="text-align: right;">
+            <span class="stat-value" id="statTotalCount">0</span>
+            <span class="stat-label">Total histórico</span>
+          </div>
+        </div>
+
+        <div class="view-header" style="margin-bottom: 10px;">
+          <h2>Toca para registrar</h2>
+          <p>Pulsa cualquier acción para guardarla al instante con fecha y hora.</p>
+        </div>
+
+        <!-- Filtro de Categorías por Chips -->
+        <div id="categoryChipsContainer" class="category-chips-bar">
+          <!-- Se renderiza dinámicamente -->
+        </div>
+
+        <div id="quickActionsGrid" class="actions-grid">
+          <!-- Se renderiza dinámicamente -->
+        </div>
+      </section>
+
+      <!-- VISTA 2: HISTORIAL -->
+      <section id="view-history" class="view-section">
+        <div class="view-header">
+          <h2>Historial de Registros</h2>
+          <p>Consulta y gestiona las acciones realizadas en el tiempo.</p>
+        </div>
+
+        <div class="history-controls">
+          <select id="historyFilterCategory" class="select-input">
+            <option value="all">Todas las categorías</option>
+            <!-- Opciones dinámicas -->
+          </select>
+
+          <select id="historyFilterAction" class="select-input">
+            <option value="all">Todas las acciones</option>
+            <!-- Opciones dinámicas -->
+          </select>
+
+          <select id="historyFilterPeriod" class="select-input">
+            <option value="all">Cualquier fecha</option>
+            <option value="today">Solo Hoy</option>
+            <option value="7days">Últimos 7 días</option>
+            <option value="30days">Últimos 30 días</option>
+          </select>
+        </div>
+
+        <div id="historyTimeline" class="history-timeline">
+          <!-- Se renderiza dinámicamente -->
+        </div>
+      </section>
+
+      <!-- VISTA 3: CONFIGURACIÓN DE ACCIONES Y CATEGORÍAS -->
+      <section id="view-actions" class="view-section">
+        <div class="view-header">
+          <h2>Gestión de Acciones</h2>
+          <p>Organiza tus actividades en categorías y personaliza cada acción.</p>
+        </div>
+
+        <!-- Sección Categorías -->
+        <div class="section-block">
+          <div class="section-block-header">
+            <h3 class="section-block-title">
+              <i data-lucide="folder" style="color: var(--primary);"></i>
+              Categorías
+            </h3>
+            <button id="btnNewCategory" class="btn-primary" style="width: auto; padding: 6px 12px; font-size: 0.8rem;">
+              <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Nueva Categoría
+            </button>
+          </div>
+          <div id="categoriesList" class="action-types-list">
+            <!-- Se renderiza dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Sección Acciones -->
+        <div class="section-block">
+          <div class="section-block-header">
+            <h3 class="section-block-title">
+              <i data-lucide="check-circle-2" style="color: var(--primary);"></i>
+              Acciones
+            </h3>
+            <button id="btnNewAction" class="btn-primary" style="width: auto; padding: 6px 12px; font-size: 0.8rem;">
+              <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Nueva Acción
+            </button>
+          </div>
+          <div id="actionTypesList" class="action-types-list">
+            <!-- Se renderiza dinámicamente -->
+          </div>
+        </div>
+      </section>
+
+      <!-- VISTA 4: EXPORTACIÓN Y PDF -->
+      <section id="view-export" class="view-section">
+        <div class="view-header">
+          <h2>Exportar e Informes</h2>
+          <p>Genera reportes PDF o guarda una copia completa de tus datos.</p>
+        </div>
+
+        <!-- Tarjeta Generador de PDF -->
+        <div class="export-card">
+          <h3>
+            <i data-lucide="file-text" style="color: var(--primary);"></i>
+            Generar Informe en PDF
+          </h3>
+          <p>Crea un documento PDF listo para descargar con la lista detallada de acciones, categorías, fecha, hora y notas.</p>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="pdfPeriodSelect">Período del informe</label>
+              <select id="pdfPeriodSelect" class="select-input">
+                <option value="today">Solo Hoy</option>
+                <option value="7days">Últimos 7 días</option>
+                <option value="this_month">Este mes</option>
+                <option value="all" selected>Todo el historial</option>
+                <option value="custom">Rango personalizado</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pdfCategorySelect">Filtrar por categoría</label>
+              <select id="pdfCategorySelect" class="select-input">
+                <option value="all">Todas las categorías</option>
+                <!-- Se llena dinámicamente -->
+              </select>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="pdfActionSelect">Filtrar por acción específica</label>
+              <select id="pdfActionSelect" class="select-input">
+                <option value="all">Todas las acciones de la categoría</option>
+                <!-- Se llena dinámicamente -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Campos de fecha personalizada (ocultos por defecto) -->
+          <div id="pdfCustomDateRange" class="form-grid" style="display: none; margin-bottom: 16px;">
+            <div class="form-group">
+              <label for="pdfCustomStart">Fecha Desde</label>
+              <input type="date" id="pdfCustomStart" class="text-input">
+            </div>
+            <div class="form-group">
+              <label for="pdfCustomEnd">Fecha Hasta</label>
+              <input type="date" id="pdfCustomEnd" class="text-input">
+            </div>
+          </div>
+
+          <button id="btnGeneratePDF" class="btn-primary">
+            <i data-lucide="download" style="width: 18px; height: 18px;"></i>
+            Descargar Informe PDF
+          </button>
+        </div>
+
+        <!-- Tarjeta Copia de Seguridad JSON -->
+        <div class="export-card">
+          <h3>
+            <i data-lucide="database" style="color: var(--success);"></i>
+            Copia de Seguridad (IndexedDB)
+          </h3>
+          <p>Guarda una copia de seguridad local completa (categorías, acciones y registros) en formato JSON para transferirla a otro dispositivo.</p>
+
+          <div style="display: flex; gap: 10px; flex-direction: column;">
+            <button id="btnExportJSON" class="btn-secondary">
+              <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+              Exportar Copia de Seguridad (JSON)
+            </button>
+
+            <label class="btn-secondary" style="cursor: pointer; text-align: center;">
+              <i data-lucide="upload" style="width: 16px; height: 16px;"></i>
+              Importar Copia de Seguridad
+              <input type="file" id="inputImportJSON" accept=".json" style="display: none;">
+            </label>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Barra de Navegación Inferior -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-view="view-register">
+        <i data-lucide="zap"></i>
+        <span>Registrar</span>
+      </button>
+      <button class="nav-item" data-view="view-history">
+        <i data-lucide="clock"></i>
+        <span>Historial</span>
+      </button>
+      <button class="nav-item" data-view="view-actions">
+        <i data-lucide="sliders"></i>
+        <span>Acciones</span>
+      </button>
+      <button class="nav-item" data-view="view-export">
+        <i data-lucide="file-text"></i>
+        <span>Exportar</span>
+      </button>
+    </nav>
+
+    <!-- MODAL: Crear/Editar Acción -->
+    <div id="modalActionType" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="modalActionTitle" class="modal-title">Nueva Acción</h3>
+          <button id="btnCloseActionModal" class="btn-tiny" aria-label="Cerrar">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <form id="formActionType">
+          <input type="hidden" id="actionTypeId">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="actionCategorySelect">Categoría asociada *</label>
+              <select id="actionCategorySelect" class="select-input" required>
+                <!-- Se llena dinámicamente -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="actionNameInput">Nombre de la acción *</label>
+              <input type="text" id="actionNameInput" class="text-input" placeholder="Ej: Matemáticas, Ciencia Ficción..." required maxlength="40">
+            </div>
+
+            <div class="form-group">
+              <label>Icono (Lucide)</label>
+              <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <input type="text" id="iconSearchInput" class="text-input" placeholder="Filtrar iconos..." style="flex: 1; padding: 6px 10px; font-size: 0.85rem;">
+                <div id="iconSelectedPreview" style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center;">
+                  <i data-lucide="check-circle" id="previewLucideIcon"></i>
+                </div>
+              </div>
+              <input type="hidden" id="actionIconInput" value="check-circle">
+              <div id="iconPickerGrid" class="icon-picker-grid">
+                <!-- Se llena dinámicamente con iconos populares de Lucide -->
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Color distintivo</label>
+              <input type="hidden" id="actionColorInput" value="#4f46e5">
+              <div id="colorPickerPalette" class="color-picker-palette">
+                <!-- Se llena con opciones de colores -->
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="btnCancelActionModal" class="btn-secondary" style="width: auto;">Cancelar</button>
+            <button type="submit" class="btn-primary" style="width: auto;">Guardar Acción</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: Crear/Editar Categoría -->
+    <div id="modalCategory" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="modalCategoryTitle" class="modal-title">Nueva Categoría</h3>
+          <button id="btnCloseCategoryModal" class="btn-tiny" aria-label="Cerrar">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <form id="formCategory">
+          <input type="hidden" id="categoryIdInput">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="categoryNameInput">Nombre de la categoría *</label>
+              <input type="text" id="categoryNameInput" class="text-input" placeholder="Ej: Estudio, Películas, Deporte..." required maxlength="35">
+            </div>
+
+            <div class="form-group">
+              <label>Icono de categoría</label>
+              <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <input type="text" id="categoryIconSearch" class="text-input" placeholder="Filtrar iconos..." style="flex: 1; padding: 6px 10px; font-size: 0.85rem;">
+                <div id="categoryIconPreview" style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center;">
+                  <i data-lucide="folder" id="categoryPreviewIconEl"></i>
+                </div>
+              </div>
+              <input type="hidden" id="categoryIconInput" value="folder">
+              <div id="categoryIconPickerGrid" class="icon-picker-grid">
+                <!-- Se llena dinámicamente -->
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Color distintivo</label>
+              <input type="hidden" id="categoryColorInput" value="#6366f1">
+              <div id="categoryColorPickerPalette" class="color-picker-palette">
+                <!-- Paleta de colores -->
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="btnCancelCategoryModal" class="btn-secondary" style="width: auto;">Cancelar</button>
+            <button type="submit" class="btn-primary" style="width: auto;">Guardar Categoría</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: Añadir/Editar Nota para un registro -->
+    <div id="modalNote" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">Añadir Nota / Observación</h3>
+          <button id="btnCloseNoteModal" class="btn-tiny">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="noteLogId">
+          <div class="form-group">
+            <label id="noteModalSubtitle" for="noteTextInput">Detalles de la acción</label>
+            <textarea id="noteTextInput" class="text-input" rows="3" placeholder="Escribe detalles adicionales (opcional)..." style="resize: vertical;"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btnCancelNoteModal" class="btn-secondary" style="width: auto;">Omitir</button>
+          <button type="button" id="btnSaveNoteModal" class="btn-primary" style="width: auto;">Guardar Nota</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenedor para notificaciones Toast -->
+    <div id="toastContainer" class="toast-container"></div>
+  </div>
+
+  <!-- Librerías de Terceros (Locales y compatibles con Service Worker offline) -->
+  <script src="js/vendor/lucide.min.js"></script>
+  <script src="js/vendor/jspdf.umd.min.js"></script>
+  <script src="js/vendor/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- Lógica de la Aplicación -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "action-tracker-pwa",
+  "version": "1.0.0",
+  "description": "PWA local para registrar acciones personalizadas en IndexedDB",
+  "type": "module",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": ["pwa", "indexeddb", "lucide", "jspdf", "offline"],
+  "author": "",
+  "license": "MIT"
+}
