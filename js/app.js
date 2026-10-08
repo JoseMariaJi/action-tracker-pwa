@@ -41,11 +41,11 @@ const state = {
 
 // Iconos populares de Lucide para los selectores
 const POPULAR_LUCIDE_ICONS = [
-  'check-circle', 'activity', 'droplet', 'pill', 'dumbbell', 'coffee', 
-  'book-open', 'heart', 'apple', 'sun', 'moon', 'briefcase', 
-  'utensils', 'clock', 'calendar', 'phone', 'mail', 'music', 
-  'camera', 'car', 'bike', 'flag', 'star', 'alert-circle', 
-  'zap', 'smile', 'glasses', 'key', 'shopping-cart', 'target', 
+  'check-circle', 'activity', 'droplet', 'pill', 'dumbbell', 'coffee',
+  'book-open', 'heart', 'apple', 'sun', 'moon', 'briefcase',
+  'utensils', 'clock', 'calendar', 'phone', 'mail', 'music',
+  'camera', 'car', 'bike', 'flag', 'star', 'alert-circle',
+  'zap', 'smile', 'glasses', 'key', 'shopping-cart', 'target',
   'gift', 'tag', 'thumbs-up', 'award', 'sparkles', 'file-text',
   'folder', 'film', 'graduation-cap', 'laptop', 'home', 'smile'
 ];
@@ -96,7 +96,7 @@ function refreshLucideIcons() {
 function initTheme() {
   const savedTheme = localStorage.getItem('action_tracker_theme');
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  
+
   state.activeTheme = savedTheme || (prefersDark ? 'dark' : 'light');
   applyTheme(state.activeTheme);
 
@@ -389,17 +389,6 @@ function renderCategoryChips() {
 
   container.innerHTML = '';
 
-  // Botón "Todas"
-  const allBtn = document.createElement('button');
-  allBtn.type = 'button';
-  allBtn.className = `chip-btn ${state.selectedRegisterCategory === 'all' ? 'active' : ''}`;
-  allBtn.innerHTML = `<i data-lucide="layers" style="width: 14px; height: 14px;"></i> Todas`;
-  allBtn.addEventListener('click', () => {
-    state.selectedRegisterCategory = 'all';
-    renderCategoryChips();
-    renderRegisterView();
-  });
-  container.appendChild(allBtn);
 
   // Chips para cada categoría
   state.categories.forEach(cat => {
@@ -414,6 +403,19 @@ function renderCategoryChips() {
     });
     container.appendChild(chip);
   });
+
+  // Botón "Todas"
+  const allBtn = document.createElement('button');
+  allBtn.type = 'button';
+  allBtn.className = `chip-btn ${state.selectedRegisterCategory === 'all' ? 'active' : ''}`;
+  allBtn.innerHTML = `<i data-lucide="layers" style="width: 14px; height: 14px;"></i> Todas`;
+  allBtn.addEventListener('click', () => {
+    state.selectedRegisterCategory = 'all';
+    renderCategoryChips();
+    renderRegisterView();
+  });
+  container.appendChild(allBtn);
+
 
   refreshLucideIcons();
 }
@@ -477,7 +479,7 @@ async function renderRegisterView() {
     card.type = 'button';
     card.className = 'action-btn-card';
     card.style.setProperty('--card-color', act.color || '#4f46e5');
-    
+
     const lightColor = hexToRgba(act.color || '#4f46e5', 0.14);
     card.style.setProperty('--card-light', lightColor);
 
@@ -510,14 +512,14 @@ async function renderRegisterView() {
 
 async function handleTriggerAction(act) {
   if (navigator.vibrate) {
-    try { navigator.vibrate(25); } catch (_) {}
+    try { navigator.vibrate(25); } catch (_) { }
   }
 
   try {
     const log = await logAction(act.id);
     const now = new Date(log.timestamp);
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    
+
     await renderRegisterView();
 
     showToast(`✓ ${act.name} registrado (${timeStr})`, {
@@ -707,9 +709,6 @@ function renderCategoriesList() {
         </div>
         <div>
           <span class="action-type-name">${escapeHTML(cat.name)}</span>
-          <div style="font-size: 0.75rem; color: var(--text-muted);">
-            ${actionsInCat.length} ${actionsInCat.length === 1 ? 'acción' : 'acciones'} ${isGeneric ? ' • <strong style="color: var(--primary);">Genérica (Obligatoria)</strong>' : ''} <i data-lucide="star" class="star-toggle${cat.isPreferred ? ' preferred' : ''}" title="${cat.isPreferred ? 'Preferida' : 'Marcar como preferida'}"></i>
-          </div>
         </div>
       </div>
       <div class="log-actions">
@@ -720,6 +719,10 @@ function renderCategoriesList() {
           <button class="btn-tiny danger" title="Eliminar categoría" data-cat-action="delete">
             <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
           </button>
+          <button class="btn-tiny" title="Marcar como preferida" data-cat-action="favorite">
+            <i data-lucide="star" class="star-toggle${cat.isPreferred ? ' preferred' : ''}" style="width: 16px; height: 16px;"></i>
+          </button>
+
         ` : `
           <button class="btn-tiny" title="Editar categoría" data-cat-action="edit">
             <i data-lucide="pencil" style="width: 16px; height: 16px;"></i>
@@ -754,7 +757,7 @@ function renderCategoriesList() {
     }
 
     // Star toggle for preferred category
-    const starToggle = row.querySelector('.star-toggle');
+    const starToggle = row.querySelector('[data-cat-action="favorite"]');
     if (starToggle) {
       starToggle.addEventListener('click', async (e) => {
         e.stopPropagation();
@@ -993,8 +996,8 @@ function openActionTypeModal(action = null, defaultCategoryId = null) {
   colorInput.value = action ? action.color : '#4f46e5';
 
   if (catSelect) {
-    catSelect.value = action 
-      ? (action.categoryId || GENERIC_CATEGORY_ID) 
+    catSelect.value = action
+      ? (action.categoryId || GENERIC_CATEGORY_ID)
       : (defaultCategoryId || state.selectedRegisterCategory !== 'all' ? state.selectedRegisterCategory : GENERIC_CATEGORY_ID);
   }
 

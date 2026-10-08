@@ -5,41 +5,41 @@
 
 :root {
   --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  
+
   /* Paleta Claro (Default) */
   --bg-app: #f8fafc;
   --bg-surface: #ffffff;
   --bg-surface-elevated: #ffffff;
   --bg-subtle: #f1f5f9;
   --bg-muted: #e2e8f0;
-  
+
   --text-main: #0f172a;
   --text-muted: #64748b;
   --text-light: #94a3b8;
-  
+
   --border-color: #e2e8f0;
   --border-focus: #6366f1;
-  
+
   --primary: #4f46e5;
   --primary-hover: #4338ca;
   --primary-light: #eef2ff;
   --primary-glow: rgba(79, 70, 229, 0.15);
-  
+
   --danger: #ef4444;
   --danger-light: #fef2f2;
   --success: #10b981;
   --success-light: #ecfdf5;
   --warning: #f59e0b;
-  
+
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-pill: 9999px;
-  
+
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-  
+
   --nav-height: 64px;
   --header-height: 60px;
   --transition-fast: 0.15s ease;
@@ -52,36 +52,39 @@
   --bg-surface-elevated: #1f2937;
   --bg-subtle: #1e293b;
   --bg-muted: #334155;
-  
+
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --text-light: #64748b;
-  
+
   --border-color: #1e293b;
   --border-focus: #818cf8;
-  
+
   --primary: #6366f1;
   --primary-hover: #4f46e5;
   --primary-light: rgba(99, 102, 241, 0.15);
   --primary-glow: rgba(99, 102, 241, 0.25);
-  
+
   --danger-light: rgba(239, 68, 68, 0.15);
   --success-light: rgba(16, 185, 129, 0.15);
-  
+
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
 }
 
 /* Base Reset */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   font-family: var(--font-family);
   background-color: var(--bg-app);
@@ -224,8 +227,15 @@ html, body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .view-header {
@@ -365,7 +375,8 @@ html, body {
   flex-wrap: wrap;
 }
 
-.select-input, .text-input {
+.select-input,
+.text-input {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   color: var(--text-main);
@@ -377,7 +388,8 @@ html, body {
   transition: border-color var(--transition-fast);
 }
 
-.select-input:focus, .text-input:focus {
+.select-input:focus,
+.text-input:focus {
   border-color: var(--border-focus);
 }
 
@@ -728,8 +740,15 @@ html, body {
 }
 
 @keyframes modalPop {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modal-header {
@@ -857,8 +876,15 @@ html, body {
 }
 
 @keyframes toastSlideDown {
-  from { opacity: 0; transform: translateY(-15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .toast.dismissing {
@@ -866,8 +892,15 @@ html, body {
 }
 
 @keyframes toastFadeOut {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-10px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 .toast-btn {
@@ -977,4 +1010,15 @@ html, body {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+
+.star-toggle.preferred {
+  color: #fbbf24;
+  /* amarillo */
+}
+
+.star-toggle.preferred path {
+  fill: currentColor;
+  /* rellena con el mismo color */
 }

@@ -188,10 +188,15 @@ export async function getCategories() {
       if (!hasGeneric) {
         list.unshift(DEFAULT_CATEGORIES[0]);
       }
+      // Orden: 1) preferida, 2) resto, 3) Genérica al final
       list.sort((a, b) => {
-        // Genérica siempre al final o al principio de manera predecible
-        if (a.id === GENERIC_CATEGORY_ID) return -1;
-        if (b.id === GENERIC_CATEGORY_ID) return 1;
+        // 1) Colocar Genérica al final
+        if (a.id === GENERIC_CATEGORY_ID) return 1;
+        if (b.id === GENERIC_CATEGORY_ID) return -1;
+        // 2) Preferida primero
+        if (a.isPreferred && !b.isPreferred) return -1;
+        if (!a.isPreferred && b.isPreferred) return 1;
+        // 3) Orden por campo order o alfabético como fallback
         return (a.order || 0) - (b.order || 0) || a.name.localeCompare(b.name);
       });
       resolve(list);
