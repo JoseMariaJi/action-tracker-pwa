@@ -8,6 +8,7 @@ import {
   getCategories,
   saveCategory,
   deleteCategory,
+  setPreferredCategory,
   getActionTypes,
   saveActionType,
   deleteActionType,
@@ -284,6 +285,12 @@ async function refreshCategories() {
   state.categories.forEach(cat => {
     state.categoriesMap[cat.id] = cat;
   });
+
+  // Determine preferred category (default to generic if none)
+  const preferredCat = state.categories.find(c => c.isPreferred) || state.categories.find(c => c.id === GENERIC_CATEGORY_ID);
+  if (preferredCat) {
+    state.selectedRegisterCategory = preferredCat.id;
+  }
 
   // Actualizar select de categorías en formulario de acción
   const actionCatSelect = document.getElementById('actionCategorySelect');
@@ -701,8 +708,7 @@ function renderCategoriesList() {
         <div>
           <span class="action-type-name">${escapeHTML(cat.name)}</span>
           <div style="font-size: 0.75rem; color: var(--text-muted);">
-            ${actionsInCat.length} ${actionsInCat.length === 1 ? 'acción' : 'acciones'}
-            ${isGeneric ? ' • <strong style="color: var(--primary);">Genérica (Obligatoria)</strong>' : ''}
+            ${actionsInCat.length} ${actionsInCat.length === 1 ? 'acción' : 'acciones'} ${isGeneric ? ' • <strong style="color: var(--primary);">Genérica (Obligatoria)</strong>' : ''} <i data-lucide="star" class="star-toggle${cat.isPreferred ? ' preferred' : ''}" title="${cat.isPreferred ? 'Preferida' : 'Marcar como preferida'}"></i>
           </div>
         </div>
       </div>
@@ -743,6 +749,23 @@ function renderCategoriesList() {
             console.error('Error al eliminar categoría:', err);
             showToast(err.message || 'Error al eliminar categoría');
           }
+        }
+      });
+    }
+
+    // Star toggle for preferred category
+    const starToggle = row.querySelector('.star-toggle');
+    if (starToggle) {
+      starToggle.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        try {
+          await setPreferredCategory(cat.id);
+          await refreshAllData();
+          await renderActionsConfigView();
+          showToast(`Categoría "${cat.name}" marcada como preferida.`);
+        } catch (err) {
+          console.error('Error al marcar categoría preferida:', err);
+          showToast(err.message || 'Error al marcar categoría como preferida');
         }
       });
     }

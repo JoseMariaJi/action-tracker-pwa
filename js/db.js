@@ -14,9 +14,9 @@ let dbPromise = null;
 export const GENERIC_CATEGORY_ID = 'cat_generic';
 
 export const DEFAULT_CATEGORIES = [
-  { id: GENERIC_CATEGORY_ID, name: 'Genérica', icon: 'folder', color: '#64748b', isDefault: true, order: 0, createdAt: 1700000000000 },
-  { id: 'cat_health', name: 'Salud y Bienestar', icon: 'heart', color: '#0ea5e9', isDefault: false, order: 1, createdAt: 1700000001000 },
-  { id: 'cat_habits', name: 'Hábitos y Estudio', icon: 'sparkles', color: '#8b5cf6', isDefault: false, order: 2, createdAt: 1700000002000 }
+  { id: GENERIC_CATEGORY_ID, name: 'Genérica', icon: 'folder', color: '#64748b', isDefault: true, isPreferred: true, order: 0, createdAt: 1700000000000 },
+  { id: 'cat_health', name: 'Salud y Bienestar', icon: 'heart', color: '#0ea5e9', isDefault: false, isPreferred: false, order: 1, createdAt: 1700000001000 },
+  { id: 'cat_habits', name: 'Hábitos y Estudio', icon: 'sparkles', color: '#8b5cf6', isDefault: false, isPreferred: false, order: 2, createdAt: 1700000002000 }
 ];
 
 // Acciones iniciales vinculadas a categorías
@@ -224,6 +224,7 @@ export async function saveCategory(category) {
       icon: category.icon || 'folder',
       color: category.color || '#6366f1',
       isDefault: category.id === GENERIC_CATEGORY_ID,
+      isPreferred: !!category.isPreferred,
       order: Number(category.order) || Date.now(),
       createdAt: category.createdAt || Date.now(),
       updatedAt: Date.now()
@@ -239,7 +240,48 @@ export async function saveCategory(category) {
  * Elimina una categoría reasignando automáticamente todas sus acciones a 'Genérica'.
  * La categoría 'Genérica' nunca puede ser eliminada.
  */
+export async function setPreferredCategory(catId) {
+  if (catId === GENERIC_CATEGORY_ID) {
+    // Ensure generic remains preferred if requested
+    // No action needed, will set below
+  }
+  const db = await openDatabase();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('categories', 'readwrite');
+    const store = tx.objectStore('categories');
+    // First, clear existing preferred flags
+    const getAllReq = store.getAll();
+    getAllReq.onsuccess = () => {
+      const cats = getAllReq.result || [];
+      cats.forEach(c => {
+        if (c.isPreferred) {
+          c.isPreferred = false;
+          store.put(c);
+        }
+      });
+      // Then set preferred for target
+      const targetReq = store.get(catId);
+      targetReq.onsuccess = () => {
+        const target = targetReq.result;
+        if (target) {
+          target.isPreferred = true;
+          store.put(target);
+          resolve(true);
+        } else {
+          reject(new Error('Categoría no encontrada'));
+        }
+      };
+      targetReq.onerror = () => reject(targetReq.error);
+    };
+    getAllReq.onerror = () => reject(getAllReq.error);
+    tx.oncomplete = () => resolve(true);
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+// Update saveCategory to persist isPreferred flag
 export async function deleteCategory(categoryId) {
+
   if (categoryId === GENERIC_CATEGORY_ID) {
     throw new Error('La categoría Genérica es obligatoria y no puede ser eliminada.');
   }
@@ -517,8 +559,8 @@ export async function importAllData(data) {
     logsStore.clear();
 
     // Importar categorías (o valores por defecto si venía de versión 1)
-    const importedCats = Array.isArray(data.categories) && data.categories.length > 0 
-      ? data.categories 
+    const importedCats = Array.isArray(data.categories) && data.categories.length > 0
+      ? data.categories
       : DEFAULT_CATEGORIES;
 
     importedCats.forEach(cat => catStore.put(cat));
