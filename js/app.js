@@ -24,9 +24,11 @@ import {
 } from './db.js';
 
 import { generateActionsPDF } from './pdf-export.js';
+import { startSpeechRecognition } from './recspeech.js';
+
 
 // ================= ESTADO GLOBAL =================
-const VERSION = "0.7";
+const VERSION = "0.8";
 
 const state = {
   categories: [],
@@ -477,6 +479,43 @@ async function renderRegisterView() {
     refreshLucideIcons();
     return;
   }
+  /*const cardVoz = `          <button type="button" class="action-btn-card"
+            style="--card-color: #e8d3d3; --card-light: rgba(231, 1, 143, 0.903);">
+
+            <div class="icon-container">
+              <i data-lucide="mic" id="micro"></i>
+            </div>
+
+            <span class="badge-category" style="margin-top: 6px; font-size: 0.65rem;">
+              Crear acción por voz
+            </span>
+          </button>`;*/
+  console.log(grid);
+  const cardVoz = document.createElement('button');
+  cardVoz.type = 'button';
+  cardVoz.className = 'action-btn-card';
+  cardVoz.style.setProperty('--card-color', '#e8d3d3');
+  cardVoz.style.setProperty('--card-light', 'rgba(231, 1, 143, 0.903)');
+  cardVoz.innerHTML = `
+      
+      <div class="icon-container">
+        <i data-lucide="mic" id="micro" style="width: 28px; height: 28px;" data-categoria="${state.selectedRegisterCategory}"></i>
+      </div>
+      
+      <span class="badge-category" style="margin-top: 6px; font-size: 0.65rem;">
+        Crear acción por voz
+      </span>
+    `;
+  grid.appendChild(cardVoz);
+  cardVoz.addEventListener('click', () => {
+    startSpeechRecognition({
+      language: 'es-ES',
+      onResult: mostrarTexto,
+      onError: (error) => {
+        console.error('Error de reconocimiento de voz:', error.error);
+      },
+    });
+  });
 
   visibleActions.forEach(act => {
     const card = document.createElement('button');
@@ -1410,4 +1449,10 @@ function getHumanDateTitle(isoDateStr) {
 function formatShortDate(ts) {
   const d = new Date(ts);
   return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+}
+
+
+function mostrarTexto(texto) {
+  console.log(texto);
+  console.log(state);
 }
