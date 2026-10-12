@@ -28,7 +28,7 @@ import { startSpeechRecognition } from './recspeech.js';
 
 
 // ================= ESTADO GLOBAL =================
-const VERSION = "0.8";
+const VERSION = "0.9";
 
 const state = {
   categories: [],
