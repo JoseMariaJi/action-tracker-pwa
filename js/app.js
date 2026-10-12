@@ -490,32 +490,8 @@ async function renderRegisterView() {
               Crear acción por voz
             </span>
           </button>`;*/
-  console.log(grid);
-  const cardVoz = document.createElement('button');
-  cardVoz.type = 'button';
-  cardVoz.className = 'action-btn-card';
-  cardVoz.style.setProperty('--card-color', '#e8d3d3');
-  cardVoz.style.setProperty('--card-light', 'rgba(231, 1, 143, 0.903)');
-  cardVoz.innerHTML = `
-      
-      <div class="icon-container">
-        <i data-lucide="mic" id="micro" style="width: 28px; height: 28px;" data-categoria="${state.selectedRegisterCategory}"></i>
-      </div>
-      
-      <span class="badge-category" style="margin-top: 6px; font-size: 0.65rem;">
-        Crear acción por voz
-      </span>
-    `;
-  grid.appendChild(cardVoz);
-  cardVoz.addEventListener('click', () => {
-    startSpeechRecognition({
-      language: 'es-ES',
-      onResult: mostrarTexto,
-      onError: (error) => {
-        console.error('Error de reconocimiento de voz:', error.error);
-      },
-    });
-  });
+
+
 
   visibleActions.forEach(act => {
     const card = document.createElement('button');
@@ -548,6 +524,31 @@ async function renderRegisterView() {
     });
 
     grid.appendChild(card);
+  });
+  const cardVoz = document.createElement('button');
+  cardVoz.type = 'button';
+  cardVoz.className = 'action-btn-card';
+  cardVoz.style.setProperty('--card-color', '#e8d3d3');
+  cardVoz.style.setProperty('--card-light', 'rgba(231, 1, 143, 0.903)');
+  cardVoz.innerHTML = `
+      
+      <div class="icon-container">
+        <i data-lucide="mic" id="micro" style="width: 28px; height: 28px;" data-categoria="${state.selectedRegisterCategory}"></i>
+      </div>
+      
+      <span class="badge-category" style="margin-top: 6px; font-size: 0.65rem;">
+        Crear acción por voz
+      </span>
+    `;
+  grid.appendChild(cardVoz);
+  cardVoz.addEventListener('click', () => {
+    startSpeechRecognition({
+      language: 'es-ES',
+      onResult: mostrarTexto,
+      onError: (error) => {
+        console.error('Error de reconocimiento de voz:', error.error);
+      },
+    });
   });
 
   refreshLucideIcons();
@@ -1452,7 +1453,30 @@ function formatShortDate(ts) {
 }
 
 
-function mostrarTexto(texto) {
+async function mostrarTexto(texto) {
   console.log(texto);
   console.log(state);
+  try {
+    const saved = await saveActionType({
+      id: undefined,
+      categoryId: state.selectedRegisterCategory,
+      name: texto,
+      icon: "mic",
+      color: "#e8d3d3"
+    });
+
+
+    await refreshActionTypes();
+    await refreshCurrentView();
+
+    const wasRenamed = saved.name !== rawName;
+    if (wasRenamed) {
+      showToast(`Acción guardada como "${saved.name}" (nombre ya existía)`);
+    } else {
+      showToast(id ? `Acción "${saved.name}" actualizada` : `Acción "${saved.name}" creada con éxito`);
+    }
+  } catch (err) {
+    console.error('Error al guardar acción:', err);
+    showToast('Error al guardar la acción');
+  }
 }
