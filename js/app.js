@@ -28,7 +28,7 @@ import { startSpeechRecognition } from './recspeech.js';
 
 
 // ================= ESTADO GLOBAL =================
-const VERSION = "0.91";
+const VERSION = "0.10";
 
 const state = {
   categories: [],
@@ -1480,4 +1480,8 @@ async function mostrarTexto(texto) {
     console.error('Error al guardar acción:', err);
     showToast('Error al guardar la acción');
   }
+  await logAction(saved.id);
+  await renderRegisterView();
+
+
 }
