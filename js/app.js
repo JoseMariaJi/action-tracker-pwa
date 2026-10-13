@@ -1475,7 +1475,7 @@ async function mostrarTexto(texto) {
     if (wasRenamed) {
       showToast(`Acción guardada como "${saved.name}" (nombre ya existía)`);
     } else {
-      showToast(id ? `Acción "${saved.name}" actualizada` : `Acción "${saved.name}" creada con éxito`);
+      showToast(saved.id ? `Acción "${saved.name}" actualizada` : `Acción "${saved.name}" creada con éxito`);
     }
   } catch (err) {
     console.error('Error al guardar acción:', err);
