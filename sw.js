@@ -1,4 +1,4 @@
-const CACHE_NAME = 'action-tracker-v99';
+const CACHE_NAME = 'action-tracker-v100';
 
 const ASSETS_TO_CACHE = [
   './',

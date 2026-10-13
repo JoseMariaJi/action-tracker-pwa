@@ -28,7 +28,7 @@ import { startSpeechRecognition } from './recspeech.js';
 
 
 // ================= ESTADO GLOBAL =================
-const VERSION = "0.10";
+const VERSION = "0.100";
 
 const state = {
   categories: [],
@@ -1456,6 +1456,7 @@ function formatShortDate(ts) {
 async function mostrarTexto(texto) {
   console.log(texto);
   console.log(state);
+
   try {
     const saved = await saveActionType({
       id: undefined,
@@ -1468,7 +1469,7 @@ async function mostrarTexto(texto) {
 
     await refreshActionTypes();
     await refreshCurrentView();
-
+    await logAction(saved.id);
     console.log("saved:", saved);
     const wasRenamed = saved.name !== texto;
     if (wasRenamed) {
@@ -1480,7 +1481,7 @@ async function mostrarTexto(texto) {
     console.error('Error al guardar acción:', err);
     showToast('Error al guardar la acción');
   }
-  await logAction(saved.id);
+
   await renderRegisterView();
 
 
