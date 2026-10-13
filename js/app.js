@@ -28,7 +28,7 @@ import { startSpeechRecognition } from './recspeech.js';
 
 
 // ================= ESTADO GLOBAL =================
-const VERSION = "0.9";
+const VERSION = "0.91";
 
 const state = {
   categories: [],
@@ -1469,6 +1469,7 @@ async function mostrarTexto(texto) {
     await refreshActionTypes();
     await refreshCurrentView();
 
+    console.log("saved:", saved);
     const wasRenamed = saved.name !== rawName;
     if (wasRenamed) {
       showToast(`Acción guardada como "${saved.name}" (nombre ya existía)`);
