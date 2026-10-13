@@ -1470,7 +1470,7 @@ async function mostrarTexto(texto) {
     await refreshCurrentView();
 
     console.log("saved:", saved);
-    const wasRenamed = saved.name !== rawName;
+    const wasRenamed = saved.name !== texto;
     if (wasRenamed) {
       showToast(`Acción guardada como "${saved.name}" (nombre ya existía)`);
     } else {
